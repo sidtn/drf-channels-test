@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+    <pre id="response"></pre>
+    <button id="subscribe">Subscribe</button>
+    <input type="number" id="product-pk">
+    <script>
+        const ws = new WebSocket("ws://localhost:8000/ws/products/")
+
+        ws.onmessage = function (e) {
+            console.log(e.data);
+            document.getElementById("response").textContent = JSON.stringify(JSON.parse(e.data), undefined, 2);
+        }
+
+        let pk = document.querySelector('#product-pk')
+
+        document.querySelector('#subscribe').onclick = function (e) {
+            ws.send(JSON.stringify({
+                action: "subscribe_instance",
+                request_id: new Date().getTime(),
+                pk: pk.value
+        }))
+        };
+    </script>
+</body>
+</html>
